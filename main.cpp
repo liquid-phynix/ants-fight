@@ -143,7 +143,7 @@ void _sceneArea::addAnt(int x, int y){
 }
 
 void _sceneArea::removeAnt(int x, int y){
-  auto it=logic.ants.find(pns::pos(y,x));
+  std::unordered_map<pns::pos, int>::iterator it=logic.ants.find(pns::pos(y,x));
   if(it!=logic.ants.end())
     logic.ants.erase(it);
 }
@@ -167,11 +167,12 @@ numOfPlayers(4){
   sceneArea->setMaximumSize(321, 321);
   for(int i=0; i<numOfPlayers; i++){
     str.setNum(i+1);
-    colorButtons[i]=new _numberedPushButton(QString("p")+str, i, sceneArea);
+    colorButtons[i]=new _numberedPushButton(this, QString("p")+str, i, sceneArea);
     colorButtons[i]->setMinimumWidth(buttonWidth);
     colorButtons[i]->setMaximumWidth(buttonWidth);
     colorButtons[i]->setPalette(QPalette(buttonColors[i]));
   }
+  colorButtons[0]->setDisabled(true);
   QVBoxLayout* colorButtonsLayout=new QVBoxLayout;
   colorButtonsLayout->addWidget(colorButtons[0], Qt::AlignTop);
   for(int i=1; i<numOfPlayers; i++)
@@ -197,6 +198,9 @@ _scene::~_scene(void){
   delete[] colorButtons;
 }
 
+void _scene::enableButton(int id){
+  colorButtons[id]->setEnabled(true);
+}
 
 
 int main(int argc, char** argv){

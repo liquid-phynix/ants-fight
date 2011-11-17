@@ -126,6 +126,7 @@ public:
   ~_sceneArea(void);
   void selectPlayer(int);
   void drawAnt(int, int);
+  int activeColorId;
 protected:
   void paintEvent(QPaintEvent*);
   void mousePressEvent(QMouseEvent*);
@@ -139,7 +140,6 @@ private:
   QImage background;
   QColor* playerColors;
   QImage* playerDots;
-  int activeColorId;
   _logic logic;
   bool draggingMouse;
   pns::pos dragPosition;
@@ -157,26 +157,7 @@ public slots:
 };
 #endif
 
-#ifndef _PBUTTON_H
-#define _PBUTTON_H
-class _numberedPushButton:public QPushButton{
-  Q_OBJECT
-private:
-  int id;
-  _sceneArea* sceneAreaPtr;
-public:
-  _numberedPushButton(QString title, int _id, _sceneArea* scptr){
-    sceneAreaPtr=scptr;
-    id=_id;
-    this->setText(title);
-    connect(this, SIGNAL(clicked()), this, SLOT(clickedWithId()));
-  }
-public slots:
-  void clickedWithId(){
-    sceneAreaPtr->selectPlayer(id);
-  }
-};
-#endif
+class _numberedPushButton;
 
 #ifndef _SCENE_H
 #define _SCENE_H
@@ -185,6 +166,7 @@ class _scene:public QWidget{
 public:
   _scene(QWidget* parent = 0);
   ~_scene(void);
+  void enableButton(int);
 private:
   int numOfPlayers;
   _numberedPushButton** colorButtons;
@@ -193,4 +175,31 @@ private:
   _sceneArea* sceneArea;
 };
 #endif
+
+
+#ifndef _PBUTTON_H
+#define _PBUTTON_H
+class _numberedPushButton:public QPushButton{
+  Q_OBJECT
+private:
+  int id;
+  _sceneArea* sceneAreaPtr;
+  _scene* parent;
+public:
+  _numberedPushButton(_scene* _parent, QString title, int _id, _sceneArea* scptr){
+    parent=_parent;
+    sceneAreaPtr=scptr;
+    id=_id;
+    this->setText(title);
+    connect(this, SIGNAL(clicked()), this, SLOT(clickedWithId()));
+  }
+public slots:
+  void clickedWithId(){
+    parent->enableButton(sceneAreaPtr->activeColorId);
+    sceneAreaPtr->selectPlayer(id);
+    this->setDisabled(true);
+  }
+};
+#endif
+
 
