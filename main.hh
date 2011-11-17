@@ -67,7 +67,7 @@ public:
     int dead[nOfAnts];
 
     int index=0;
-    for(auto posIt=ants.begin(), endIt=ants.end(); posIt!=endIt; posIt++, index++){
+    for(std::unordered_map<pns::pos, int>::iterator posIt=ants.begin(), endIt=ants.end(); posIt!=endIt; posIt++, index++){
       row[index]=posIt->first.row;
       col[index]=posIt->first.col;
       kind[index]=posIt->second;
