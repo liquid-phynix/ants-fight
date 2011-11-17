@@ -1,0 +1,9 @@
+you can simulate battle simulations with this software
+draw ants on the board, then see which ones remain.
+
+compilation:
+you need qt for this
+qmake will make a Makefile for your setup
+then you need to edit that Makefile, and add -std=c++0x to the CXXFLAGS variable
+after that type make
+the executable is "f"

@@ -144,7 +144,7 @@ public slots:
   void doResolve(){
     withTransition=5;
     logic.battleResolution();
-    timerId=this->startTimer(100);
+    timerId=this->startTimer(150);
   }
 };
 #endif
