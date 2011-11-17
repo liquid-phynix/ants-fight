@@ -7,6 +7,14 @@
 using namespace std;
 
 _sceneArea::_sceneArea(QColor* pcs, int nofp){
+  draggingMouse=false;
+  dragPosition=pns::pos(0,0);
+  pressedButton=0;
+  withTransition=0;
+  lastScene=0;
+  newScene=0;
+  timerId=0;
+  
   numOfPlayers=nofp;
   playerColors=pcs;
   activeColorId=0;
@@ -30,26 +38,70 @@ _sceneArea::_sceneArea(QColor* pcs, int nofp){
     QPainter dotPainter(&playerDots[i]);
     dotPainter.setRenderHint(QPainter::Antialiasing, true);
     dotPainter.setBrush(QBrush(playerColors[i]));
-    dotPainter.setPen(QPen(playerColors[i]));
-    dotPainter.drawEllipse(2,2,14,14);
+    //dotPainter.setPen(QPen(playerColors[i]));
+    dotPainter.setPen(QPen(Qt::black));
+    dotPainter.drawEllipse(2,2,13,13);
     dotPainter.end();
   }
 }
 
 _sceneArea::~_sceneArea(void){
   delete[] playerDots;
+  delete lastScene;
 }
 
-void _sceneArea::paintEvent(QPaintEvent* event){
+// void _sceneArea::paintEvent(QPaintEvent* event){
+//   if(withTransition){
+//     QImage tmpImage(
+//     withTransition=false;
+//   }else{
+//     QPainter painter(this);
+//     painter.drawImage(QPoint(0,0), background);
+//     for(auto posIt=logic.ants.begin(), endIt=logic.ants.end(); posIt!=endIt; posIt++){
+//       painter.drawImage(posIt->first.col*16,posIt->first.row*16, playerDots[posIt->second]);
+//     }
+//   }
+// }
+
+void _sceneArea::paintEvent(QPaintEvent*){
   QPainter painter(this);
-  painter.drawImage(QPoint(0,0), background);
+  QImage scene(this->width(), this->height(), QImage::Format_ARGB32);
+  painter.drawImage(0, 0, background);
   
-  for(auto posIt=logic.ants.begin(), endIt=logic.ants.end(); posIt!=endIt; posIt++){
-    painter.drawImage(posIt->first.col*16,posIt->first.row*16, playerDots[posIt->second]);
+  if(newScene==0){
+    newScene=new QImage(this->width(), this->height(), QImage::Format_ARGB32);
+    QPainter newPainter(newScene);
+    newPainter.setCompositionMode(QPainter::CompositionMode_Source);
+    newPainter.fillRect(newScene->rect(), Qt::transparent);
+    newPainter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+    for(auto posIt=logic.ants.begin(), endIt=logic.ants.end(); posIt!=endIt; posIt++){
+      newPainter.drawImage(posIt->first.col*16,posIt->first.row*16, playerDots[posIt->second]);
+    }
+    newPainter.end();
   }
-  //painter.setRenderHint(QPainter::Antialiasing, true);
-  //painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
-  //painter.drawLines(gridLines.data(), gridLines.size());
+  
+  if(withTransition>0){
+    QImage alphaScene(this->width(), this->height(), QImage::Format_Indexed8);
+    alphaScene.fill(withTransition*255/8);
+    lastScene->setAlphaChannel(alphaScene);
+    painter.drawImage(0, 0, *lastScene);
+    painter.drawImage(0, 0, *newScene);    
+    painter.end();
+    withTransition--;
+  }else{
+    painter.drawImage(0, 0, *newScene);
+    painter.end();
+    
+    this->killTimer(timerId);
+    if(lastScene) delete lastScene;
+    lastScene=newScene;
+    newScene=0;
+    withTransition=0;
+  }
+}
+
+void _sceneArea::timerEvent(QTimerEvent*){
+  repaint();
 }
 
 void _sceneArea::mousePressEvent(QMouseEvent* mevent){
@@ -58,9 +110,32 @@ void _sceneArea::mousePressEvent(QMouseEvent* mevent){
   mx/=16;
   my/=16;
   
-  if(mevent->button()==1) addAnt(mx, my);
-  if(mevent->button()==2) removeAnt(mx, my);
+  draggingMouse=true;
+  dragPosition=pns::pos(mx, my);
+  pressedButton=mevent->button();
+  if(pressedButton==1) addAnt(mx, my);
+  if(pressedButton==2) removeAnt(mx, my);
   repaint();
+}
+
+void _sceneArea::mouseReleaseEvent(QMouseEvent*){
+  draggingMouse=false;
+  pressedButton=0;
+}
+
+void _sceneArea::mouseMoveEvent(QMouseEvent* mevent){
+  if(!draggingMouse) return;
+  
+  int mx=mevent->x();
+  int my=mevent->y();
+  mx/=16;
+  my/=16;
+  if(! (pns::pos(mx, my)==dragPosition)){
+    if(pressedButton==1) addAnt(mx, my);
+    if(pressedButton==2) removeAnt(mx, my);
+    dragPosition=pns::pos(mx, my);
+    repaint();
+  }
 }
 
 void _sceneArea::addAnt(int x, int y){
@@ -79,7 +154,7 @@ void _sceneArea::selectPlayer(int id){
 
 _scene::_scene(QWidget* parent):
 QWidget(parent),
-numOfPlayers(8){
+numOfPlayers(4){
   int buttonWidth=70;
   QString str;
   buttonColors=new QColor[numOfPlayers];

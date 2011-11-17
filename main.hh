@@ -121,6 +121,9 @@ public:
 protected:
   void paintEvent(QPaintEvent*);
   void mousePressEvent(QMouseEvent*);
+  void mouseReleaseEvent(QMouseEvent*);
+  void mouseMoveEvent(QMouseEvent*);
+  void timerEvent(QTimerEvent*);
 private:
   void addAnt(int, int);
   void removeAnt(int, int);
@@ -130,10 +133,18 @@ private:
   QImage* playerDots;
   int activeColorId;
   _logic logic;
+  bool draggingMouse;
+  pns::pos dragPosition;
+  int pressedButton;
+  int withTransition;
+  QImage* lastScene;
+  QImage* newScene;
+  int timerId;
 public slots:
   void doResolve(){
+    withTransition=5;
     logic.battleResolution();
-    repaint();
+    timerId=this->startTimer(100);
   }
 };
 #endif
