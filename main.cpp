@@ -165,9 +165,6 @@ numOfPlayers(4){
   sceneArea=new _sceneArea(buttonColors, numOfPlayers);
   sceneArea->setMinimumSize(321, 321);
   sceneArea->setMaximumSize(321, 321);
-#if defined _WIN32  
-  QWindowsStyle windowsStyle;
-#endif
   
   for(int i=0; i<numOfPlayers; i++){
     str.setNum(i+1);
@@ -176,7 +173,7 @@ numOfPlayers(4){
     colorButtons[i]->setMaximumWidth(buttonWidth);
     colorButtons[i]->setPalette(QPalette(buttonColors[i]));
 #if defined _WIN32
-    colorButtons[i]->setStyle(&windowsStyle);
+    colorButtons[i]->setStyle(new QWindowsStyle);
 #endif
   }
   colorButtons[0]->setDisabled(true);
