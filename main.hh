@@ -154,6 +154,10 @@ public slots:
     logic.battleResolution();
     timerId=this->startTimer(150);
   }
+  void clearBoard(void){
+    logic.ants.clear();
+    repaint();
+  }
 };
 #endif
 
@@ -171,6 +175,7 @@ private:
   int numOfPlayers;
   _numberedPushButton** colorButtons;
   QPushButton* stepButton;
+  QPushButton* clearButton;
   QColor* buttonColors;
   _sceneArea* sceneArea;
 };

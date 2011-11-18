@@ -181,12 +181,23 @@ numOfPlayers(4){
   colorButtonsLayout->addWidget(colorButtons[0], Qt::AlignTop);
   for(int i=1; i<numOfPlayers; i++)
     colorButtonsLayout->addWidget(colorButtons[i]);
+  
+  
+  clearButton=new QPushButton(QString("clear!"));
+  clearButton->setMinimumHeight(100);
+  clearButton->setMaximumHeight(200);
+  colorButtonsLayout->addStretch();
+  colorButtonsLayout->addWidget(clearButton);
+  colorButtonsLayout->addStretch();
+  connect(clearButton, SIGNAL(clicked()), sceneArea, SLOT(clearBoard()));
+  
   colorButtonsLayout->addStretch();
   stepButton=new QPushButton(QString("resolve!"));
   stepButton->setMinimumWidth(buttonWidth);
   stepButton->setMaximumWidth(buttonWidth);
   connect(stepButton, SIGNAL(clicked()), sceneArea, SLOT(doResolve()));
   colorButtonsLayout->addWidget(stepButton);
+  
   
   QGridLayout* mainLayout=new QGridLayout;
   mainLayout->addWidget(sceneArea, 0, 1);

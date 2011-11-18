@@ -12,7 +12,7 @@ CC            = gcc
 CXX           = g++
 DEFINES       = -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED
 CFLAGS        = -m64 -pipe -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector --param=ssp-buffer-size=4 -D_FORTIFY_SOURCE=2 -fno-strict-aliasing -Wall -W -D_REENTRANT $(DEFINES)
-CXXFLAGS      = -m64 -pipe -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector --param=ssp-buffer-size=4 -D_FORTIFY_SOURCE=2 -fno-strict-aliasing -Wall -W -D_REENTRANT $(DEFINES)
+CXXFLAGS      = -std=c++0x -m64 -pipe -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector --param=ssp-buffer-size=4 -D_FORTIFY_SOURCE=2 -fno-strict-aliasing -Wall -W -D_REENTRANT $(DEFINES)
 INCPATH       = -I/usr/share/qt/mkspecs/linux-g++-64 -I. -I/usr/include/QtCore -I/usr/include/QtGui -I/usr/include -I. -I.
 LINK          = g++
 LFLAGS        = -m64 -Wl,-O1,--sort-common,--as-needed,-z,relro,--hash-style=gnu -Wl,-O1
