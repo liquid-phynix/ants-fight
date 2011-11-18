@@ -2,12 +2,12 @@
 #include<unordered_map>
 #include<algorithm>
 
-#if defined _WIN32 || defined _WIN64
-void* __gxx_personality_sj0=0;
-void* _Unwind_SjLj_Register=0;
-void* _Unwind_SjLj_Unregister=0;
-void* _Unwind_SjLj_Resume=0;
-#endif
+// #if defined _WIN32 || defined _WIN64
+// void* __gxx_personality_sj0=0;
+// void* _Unwind_SjLj_Register=0;
+// void* _Unwind_SjLj_Unregister=0;
+// void* _Unwind_SjLj_Resume=0;
+// #endif
 
 
 #include<QtGui>
