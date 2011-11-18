@@ -19,7 +19,7 @@ _sceneArea::_sceneArea(QColor* pcs, int nofp){
   playerColors=pcs;
   activeColorId=0;
   QVarLengthArray<QLine> gridLines;
-  background.load(":/images/bck.jpg");
+  background.load(":/images/bck.png");
   gridLines=QVarLengthArray<QLine>();
   for(int x=0; x<=this->width(); x+=16){
     gridLines.append(QLine(x, 0, x, this->height()));
