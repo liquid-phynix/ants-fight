@@ -7,3 +7,5 @@ qmake will make a Makefile for your setup
 then you need to edit that Makefile, and add -std=c++0x to the CXXFLAGS variable
 after that type make
 the executable is "f"
+you can download linux and windows executables from here:
+https://minus.com/liquid-phynix
